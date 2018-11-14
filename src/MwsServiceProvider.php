@@ -19,13 +19,15 @@ class MwsServiceProvider extends ServiceProvider {
     {
         
                 //Setting values can also be hardcoded within env. variables and pulled in if persistence and use of LaravelSettings is not needed.    
-        $configStore = [
-            // Default service URL
-            'AMAZON_SERVICE_URL' => 'https://mws.amazonservices.com/',
-            'muteLog' => false
-        ];
+//         $configStore = [
+//             // Default service URL
+//             'AMAZON_SERVICE_URL' => 'https://mws.amazonservices.com/',
+//             'muteLog' => false
+//         ];
         
-        $configStore = array_merge($configStore, config('mws'));
+       
+//         $configStore = array_merge($configStore, config('mws'));
+        $configStore = config('mws');
 
         $config = \App::make('config');
         $key = 'amazon-mws';
