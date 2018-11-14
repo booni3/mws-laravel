@@ -381,7 +381,7 @@ abstract class AmazonCore
     public function setConfig()
     {
        // var_dump(Setting::all());
-        $this->readyConfig();
+//         $this->readyConfig();
         //var_dump(Config::all());
         $AMAZON_SERVICE_URL = Config::get('amazon-mws.AMAZON_SERVICE_URL');
 
