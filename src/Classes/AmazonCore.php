@@ -380,16 +380,15 @@ abstract class AmazonCore
 
     public function setConfig()
     {
-       // var_dump(Setting::all());
-//         $this->readyConfig();
-        //var_dump(Config::all());
-        $AMAZON_SERVICE_URL = Config::get('amazon-mws.AMAZON_SERVICE_URL');
-
-        if (isset($AMAZON_SERVICE_URL)) {
-            $this->urlbase = $AMAZON_SERVICE_URL;
-        } else {
-            throw new Exception("Config file does not exist or cannot be read! Updated");
-        }
+//        $config = Config::get('amazon-mws.store');
+//        dd($config[$this->storeName]);
+//        $AMAZON_SERVICE_URL = Config::get('amazon-mws.store.'. $this->storeName .'serviceUrl');
+//
+//        if (isset($AMAZON_SERVICE_URL)) {
+//            $this->urlbase = $AMAZON_SERVICE_URL;
+//        } else {
+//            throw new Exception("Config file does not exist or cannot be read! Updated");
+//        }
     }
 
     /**
@@ -434,12 +433,10 @@ abstract class AmazonCore
             } else {
                 $this->log("Access authToken is missing!", 'Warning');
             }
-            // Overwrite Amazon service url if specified
             if (array_key_exists('amazonServiceUrl', $store[$s])) {
                 $AMAZON_SERVICE_URL = $store[$s]['amazonServiceUrl'];
                 $this->urlbase = $AMAZON_SERVICE_URL;
             }
-
         } else {
             //throw new \Exception("Store $s does not exist!");
             $this->log("Store $s does not exist!", 'Warning');
@@ -468,13 +465,9 @@ abstract class AmazonCore
                     'keyId' => Setting::get('keyId'),
                     'secretKey' => Setting::get('secretKey'),
                     'amazonServiceUrl'=> Setting::get('amazonServiceUrl'),
-                    'AMAZON_SERVICE_URL'=> Setting::get('amazonServiceUrl'),
                     'authToken'=> Setting::get('authToken'),
                 ]
             ],
-
-            // Default service URL
-            'AMAZON_SERVICE_URL' => Setting::get('amazonServiceUrl'),
 
             'muteLog' => false
         ];
@@ -520,7 +513,7 @@ abstract class AmazonCore
                 default:
                     $loglevel = 'info';
             }
-            call_user_func(array('Log', $loglevel), $msg);
+            call_user_func(array('Log', $loglevel), 'Amazon MWS ' . $this->storeName . ' : ' . $msg);
 
             if (isset($muteLog) && $muteLog == true) {
                 return;
