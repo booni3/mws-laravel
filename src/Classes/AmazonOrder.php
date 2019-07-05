@@ -239,8 +239,8 @@ class AmazonOrder extends AmazonOrderCore
         if (isset($xml->LatestDeliveryDate)) {
             $d['LatestDeliveryDate'] = (string)$xml->LatestDeliveryDate;
         }
-        if (isset($xml->ShippedByAmazonTFM)) {
-            $d['ShippedByAmazonTFM'] = (string)$xml->ShippedByAmazonTFM;
+        if (isset($xml->ShippedByAmazonTfm)) {
+            $d['ShippedByAmazonTfm'] = (string)$xml->ShippedByAmazonTfm;
         }
         if (isset($xml->IsBusinessOrder)) {
             $d['IsBusinessOrder'] = (string)$xml->IsBusinessOrder;
@@ -286,7 +286,7 @@ class AmazonOrder extends AmazonOrderCore
      * <li><b>BuyerName</b> (optional) - name of the buyer</li>
      * <li><b>BuyerEmail</b> (optional) - Amazon-generated email for the buyer</li>
      * <li><b>ShipServiceLevelCategory</b> (optional) - "Expedited", "NextDay", "SecondDay", or "Standard"</li>
-     * <li><b>ShippedByAmazonTFM</b></li>
+     * <li><b>ShippedByAmazonTfm</b></li>
      * <li><b>IsBusinessOrder</b></li>
      * <li><b>IsReplacementOrder</b></li>
      * <li><b>IsPremiumOrder</b></li>
@@ -734,10 +734,10 @@ class AmazonOrder extends AmazonOrderCore
     /**
      * @return bool
      */
-    public function getShippedByAmazonTFM()
+    public function getShippedByAmazonTfm()
     {
-        if (isset($this->data['ShippedByAmazonTFM'])) {
-            return $this->data['ShippedByAmazonTFM'];
+        if (isset($this->data['ShippedByAmazonTfm'])) {
+            return $this->data['ShippedByAmazonTfm'];
         } else {
             return false;
         }
