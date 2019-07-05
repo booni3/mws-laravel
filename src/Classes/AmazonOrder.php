@@ -239,6 +239,24 @@ class AmazonOrder extends AmazonOrderCore
         if (isset($xml->LatestDeliveryDate)) {
             $d['LatestDeliveryDate'] = (string)$xml->LatestDeliveryDate;
         }
+        if (isset($xml->ShippedByAmazonTFM)) {
+            $d['ShippedByAmazonTFM'] = (string)$xml->ShippedByAmazonTFM;
+        }
+        if (isset($xml->IsBusinessOrder)) {
+            $d['IsBusinessOrder'] = (string)$xml->IsBusinessOrder;
+        }
+        if (isset($xml->IsReplacementOrder)) {
+            $d['IsReplacementOrder'] = (string)$xml->IsReplacementOrder;
+        }
+        if (isset($xml->IsPremiumOrder)) {
+            $d['IsPremiumOrder'] = (string)$xml->IsPremiumOrder;
+        }
+        if (isset($xml->IsPrime)) {
+            $d['IsPrime'] = (string)$xml->IsPrime;
+        }
+        if (isset($xml->ShipmentServiceLevelCategory)) {
+            $d['ShipmentServiceLevelCategory'] = (string)$xml->ShipmentServiceLevelCategory;
+        }
 
         $this->data = $d;
     }
@@ -268,6 +286,12 @@ class AmazonOrder extends AmazonOrderCore
      * <li><b>BuyerName</b> (optional) - name of the buyer</li>
      * <li><b>BuyerEmail</b> (optional) - Amazon-generated email for the buyer</li>
      * <li><b>ShipServiceLevelCategory</b> (optional) - "Expedited", "NextDay", "SecondDay", or "Standard"</li>
+     * <li><b>ShippedByAmazonTFM</b></li>
+     * <li><b>IsBusinessOrder</b></li>
+     * <li><b>IsReplacementOrder</b></li>
+     * <li><b>IsPremiumOrder</b></li>
+     * <li><b>IsPrime</b></li>
+     * <li><b>ShipmentServiceLevelCategory</b></li>
      * </ul>
      * @return array|boolean array of data, or <b>FALSE</b> if data not filled yet
      */
@@ -702,6 +726,78 @@ class AmazonOrder extends AmazonOrderCore
 
             $ratio = $this->data['NumberOfItemsShipped'] / $total;
             return $ratio;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function getShippedByAmazonTFM()
+    {
+        if (isset($this->data['ShippedByAmazonTFM'])) {
+            return $this->data['ShippedByAmazonTFM'];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsBusinessOrder()
+    {
+        if (isset($this->data['IsBusinessOrder'])) {
+            return $this->data['IsBusinessOrder'];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsReplacementOrder()
+    {
+        if (isset($this->data['IsReplacementOrder'])) {
+            return $this->data['IsReplacementOrder'];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsPremiumOrder()
+    {
+        if (isset($this->data['IsPremiumOrder'])) {
+            return $this->data['IsPremiumOrder'];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsPrime()
+    {
+        if (isset($this->data['IsPrime'])) {
+            return $this->data['IsPrime'];
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function getShipmentServiceLevelCategory()
+    {
+        if (isset($this->data['ShipmentServiceLevelCategory'])) {
+            return $this->data['ShipmentServiceLevelCategory'];
         } else {
             return false;
         }
