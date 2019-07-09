@@ -1,11 +1,5 @@
 <?php namespace Mws\Laravel;
 
-<<<<
-<<< HEAD
-
-use Mws\Laravel\AmazonFeedsCore;
-=======
->>>>>>> laravel-5-and-fixes
 /**
  * Copyright 2013 CPI Group, LLC
  *
