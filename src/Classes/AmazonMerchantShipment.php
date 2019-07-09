@@ -1,4 +1,7 @@
-<?php
+<?php namespace Mws\Laravel;
+
+use Mws\Laravel\AmazonMerchantCore;
+
 /**
  * Copyright 2013 CPI Group, LLC
  *
