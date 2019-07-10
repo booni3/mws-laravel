@@ -28,7 +28,7 @@ use Iterator;
  * time frame can be set to narrow the scope of the list. This object
  * can use tokens when retrieving the list.
  */
-class AmazonFeedList extends AmazonFeedsCore implements Iterator{
+class AmazonFeedList extends AmazonFeedsCore implements \Iterator{
     protected $tokenFlag = false;
     protected $tokenUseFlag = false;
     private $feedList;

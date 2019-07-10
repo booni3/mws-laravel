@@ -28,7 +28,7 @@ use Iterator;
  * are available to narrow the number of orders returned, but none of them
  * are required. This object can use tokens when retrieving the list.
  */
-class AmazonOrderList extends AmazonOrderCore implements Iterator
+class AmazonOrderList extends AmazonOrderCore implements \Iterator
 {
     private $orderList;
     private $i = 0;

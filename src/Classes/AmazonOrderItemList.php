@@ -26,7 +26,7 @@ use Iterator;
  * with a specific order. Before any items can be retrieved, an Order ID is
  * required. This object can use tokens when retrieving the list.
  */
-class AmazonOrderItemList extends AmazonOrderCore implements Iterator
+class AmazonOrderItemList extends AmazonOrderCore implements \Iterator
 {
     private $itemList;
     protected $tokenFlag = false;

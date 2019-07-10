@@ -1,4 +1,6 @@
-<?php
+<?php namespace Mws\Laravel;
+
+use Mws\Laravel\AmazonCore;
 
 /**
  * Copyright 2013 CPI Group, LLC

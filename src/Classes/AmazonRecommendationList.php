@@ -26,7 +26,7 @@
  * configured marketplace is used by default.
  * This class can be iterated over, but only when the category parameter is set.
  */
-class AmazonRecommendationList extends AmazonRecommendationCore implements Iterator {
+class AmazonRecommendationList extends AmazonRecommendationCore implements \Iterator {
     protected $updated;
     protected $list;
     protected $listkey;

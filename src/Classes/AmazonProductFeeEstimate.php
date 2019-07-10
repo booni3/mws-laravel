@@ -1,4 +1,7 @@
-<?php
+<?php namespace Mws\Laravel;
+
+use Mws\Laravel\AmazonProductsCore;
+
 /**
  * Copyright 2013-2017 CPI Group, LLC
  *
@@ -23,7 +26,7 @@
  * that match the given requests. In order to do this, at least one set of
  * item-related information must be given.
  */
-class AmazonProductFeeEstimate extends AmazonProductsCore implements Iterator{
+class AmazonProductFeeEstimate extends AmazonProductsCore implements \Iterator{
     protected $i = 0;
 
     /**
