@@ -113,6 +113,7 @@ abstract class AmazonCore
     protected $mockIndex = 0;
     protected $env;
     protected $rawResponses = array();
+    protected $disableSslVerify = false;
 
     /**
      * AmazonCore constructor sets up key information used in all Amazon requests.
@@ -371,24 +372,15 @@ abstract class AmazonCore
 
     // *
     //  * Set the config file.
-    //  * 
+    //  *
     //  * This method can be used to change the config file after the object has
     //  * been initiated. The file will not be set if it cannot be found or read.
     //  * This is useful for testing, in cases where you want to use a different file.
     //  * @param string $path <p>The path to the config file.</p>
     //  * @throws Exception If the file cannot be found or read.
-
     public function setConfig()
     {
-//        $config = Config::get('amazon-mws.store');
-//        dd($config[$this->storeName]);
-//        $AMAZON_SERVICE_URL = Config::get('amazon-mws.store.'. $this->storeName .'serviceUrl');
-//
-//        if (isset($AMAZON_SERVICE_URL)) {
-//            $this->urlbase = $AMAZON_SERVICE_URL;
-//        } else {
-//            throw new Exception("Config file does not exist or cannot be read! Updated");
-//        }
+
     }
 
     /**
@@ -544,7 +536,6 @@ abstract class AmazonCore
             } else {
                 $ip = 'cli';
             }
-
         } else {
             return false;
         }
@@ -574,15 +565,17 @@ abstract class AmazonCore
      * Defaults to the current time.</p>
      * @return string Unix timestamp of the time, minus 2 minutes.
      */
-    protected function genTime($time = false)
-    {
-        if (!$time) {
+    protected function genTime($time=false){
+        if (!$time){
             $time = time();
-        } else {
+        } else if (is_numeric($time)) {
+            $time = (int)$time;
+        } else if (is_string($time)) {
             $time = strtotime($time);
-
+        } else {
+            throw new InvalidArgumentException('Invalid time input given');
         }
-        return date(DateTime::ISO8601, $time - 120);
+        return date('c', $time-120);
 
     }
 
@@ -630,7 +623,7 @@ abstract class AmazonCore
         $this->log("Making request to Amazon: " . $this->options['Action']);
         $response = $this->fetchURL($url, $param);
 
-        while ($response['code'] == '503' && $this->throttleStop == false) {
+        while (isset($response['code']) && $response['code'] == '503' && $this->throttleStop == false) {
             $this->sleep();
             $response = $this->fetchURL($url, $param);
         }
@@ -682,6 +675,69 @@ abstract class AmazonCore
     }
 
     /**
+     * Gives the response code from the last response.
+     * This data can also be found in the array given by getLastResponse.
+     * @return string|int standard REST response code (200, 404, etc.) or <b>NULL</b> if no response
+     * @see getLastResponse
+     */
+    public function getLastResponseCode() {
+        $last = $this->getLastResponse();
+        if (!empty($last['code'])) {
+            return $last['code'];
+        }
+    }
+
+    /**
+     * Gives the last response with an error code.
+     * This may or may not be the same as the last response if multiple requests were made.
+     * @return array associative array of HTTP response or <b>NULL</b> if no error response yet
+     * @see getLastResponse
+     */
+    public function getLastErrorResponse() {
+        if (!empty($this->rawResponses)) {
+            foreach (array_reverse($this->rawResponses) as $x) {
+                if (isset($x['error'])) {
+                    return $x;
+                }
+            }
+        }
+    }
+
+    /**
+     * Gives the Amazon error code from the last error response.
+     * The error code uses words rather than numbers. (Ex: "InvalidParameterValue")
+     * This data can also be found in the XML body given by getLastErrorResponse.
+     * @return string Amazon error code or <b>NULL</b> if not set yet or no error response yet
+     * @see getLastErrorResponse
+     */
+    public function getLastErrorCode() {
+        $last = $this->getLastErrorResponse();
+        if (!empty($last['body'])) {
+            $xml = simplexml_load_string($last['body']);
+            if (isset($xml->Error->Code)) {
+                return $xml->Error->Code;
+            }
+        }
+    }
+
+    /**
+     * Gives the error message from the last error response.
+     * Not all error responses will have error messages.
+     * This data can also be found in the XML body given by getLastErrorResponse.
+     * @return string Amazon error code or <b>NULL</b> if not set yet or no error response yet
+     * @see getLastErrorResponse
+     */
+    public function getLastErrorMessage() {
+        $last = $this->getLastErrorResponse();
+        if (!empty($last['body'])) {
+            $xml = simplexml_load_string($last['body']);
+            if (isset($xml->Error->Message)) {
+                return $xml->Error->Message;
+            }
+        }
+    }
+
+    /**
      * Sleeps for the throttle time and records to the log.
      */
     protected function sleep()
@@ -711,6 +767,23 @@ abstract class AmazonCore
         }
     }
 
+    /**
+     * Disables or enables the use of SSL verification when sending requests to Amazon.
+     *
+     * This is <b>not recommended</b> for a production environment,
+     * as it is a <b>security risk</b> and can put merchant credentials in danger.
+     * However, this option is still available in case it is needed.
+     *
+     * Use at your own risk.
+     * @param boolean $b [optional] <p>Defaults to <b>TRUE</b>.</p>
+     */
+    public function setDisableSslVerify($b = true) {
+        $this->disableSslVerify = $b;
+        if ($b) {
+            $this->log('Caution: Disabling SSL verification.', 'Warning');
+        }
+    }
+
     //Functions from Athena:
     /**
      * Get url or send POST data
@@ -734,6 +807,11 @@ abstract class AmazonCore
         curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
         curl_setopt($ch, CURLOPT_HEADER, 1);
         curl_setopt($ch, CURLOPT_URL, $url);
+        if ($this->disableSslVerify) {
+            $this->log('Caution: Request being sent without SSL verification.', 'Warning');
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        }
         if (!empty($param)) {
             if (!empty($param['Header'])) {
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $param['Header']);
@@ -807,7 +885,8 @@ abstract class AmazonCore
     protected function _urlencode($value)
     {
         return rawurlencode($value);
-        return str_replace('%7E', '~', rawurlencode($value));
+        //Amazon suggests doing this, but it seems to break things rather than fix them:
+        //return str_replace('%7E', '~', rawurlencode($value));
     }
 
     /**

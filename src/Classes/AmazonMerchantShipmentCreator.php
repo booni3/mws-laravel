@@ -535,7 +535,6 @@ class AmazonMerchantShipmentCreator extends AmazonMerchantCore {
     public function fetchServices() {
         $services = new AmazonMerchantServiceList($this->storeName, $this->mockMode, $this->mockFiles, $this->config);
         $services->mockIndex = $this->mockIndex;
-        $services->setLogPath($this->logpath);
         $services->setDetailsByCreator($this);
         $services->fetchServices();
         return $services;
@@ -566,7 +565,7 @@ class AmazonMerchantShipmentCreator extends AmazonMerchantCore {
             return false;
         }
         if (!array_key_exists('ShipmentRequestDetails.PackageDimensions.Length',$this->options) &&
-                !array_key_exists('ShipmentRequestDetails.PackageDimensions.PredefinedPackageDimensions',$this->options)){
+            !array_key_exists('ShipmentRequestDetails.PackageDimensions.PredefinedPackageDimensions',$this->options)){
             $this->log("Package Dimensions must be set in order to create a shipment",'Warning');
             return false;
         }
@@ -593,7 +592,7 @@ class AmazonMerchantShipmentCreator extends AmazonMerchantCore {
 
         $path = $this->options['Action'].'Result';
         if ($this->mockMode){
-           $xml = $this->fetchMockFile()->$path;
+            $xml = $this->fetchMockFile()->$path;
         } else {
             $response = $this->sendRequest($url, array('Post'=>$query));
 
@@ -620,7 +619,6 @@ class AmazonMerchantShipmentCreator extends AmazonMerchantCore {
         }
 
         $this->shipment = new AmazonMerchantShipment($this->storeName, NULL, $xml, $this->mockMode, $this->mockFiles, $this->config);
-        $this->shipment->setLogPath($this->logpath);
         $this->shipment->mockIndex = $this->mockIndex;
     }
 
