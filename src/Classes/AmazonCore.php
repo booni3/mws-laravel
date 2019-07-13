@@ -565,18 +565,15 @@ abstract class AmazonCore
      * Defaults to the current time.</p>
      * @return string Unix timestamp of the time, minus 2 minutes.
      */
-    protected function genTime($time=false){
-        if (!$time){
+    protected function genTime($time=false)
+    {
+        if (!$time) {
             $time = time();
-        } else if (is_numeric($time)) {
-            $time = (int)$time;
-        } else if (is_string($time)) {
-            $time = strtotime($time);
         } else {
-            throw new InvalidArgumentException('Invalid time input given');
-        }
-        return date('c', $time-120);
+            $time = strtotime($time);
 
+        }
+        return date(DateTime::ISO8601, $time - 120);
     }
 
     /**
