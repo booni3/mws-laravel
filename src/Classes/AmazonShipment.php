@@ -77,6 +77,45 @@ class AmazonShipment extends AmazonInboundCore
         }
     }
 
+
+    /**
+     * Sets the shipment shipment name (required)
+     *
+     * @param string $a
+     * @return bool
+     * @throws \Exception
+     */
+    public function setShipmentName($a)
+    {
+        if (!$a || is_null($a) || !is_string($a)) {
+            $this->log("Tried to set shipment name to invalid values", 'Warning');
+            return false;
+        }
+
+        $this->options['InboundShipmentHeader.ShipmentName'] = $a;
+
+    }
+
+    /**
+     * Sets the shipment contents source (optional)
+     *
+     * This is required if intending to set the box contents by the "_POST_FBA_INBOUND_CARTON_CONTENTS_" feed
+     *
+     * @param string $a
+     * @return bool
+     * @throws \Exception
+     */
+    public function setIntendedBoxContentsSource($a)
+    {
+        if (! in_array($a, ['NONE', 'FEED', '2D_BARCODE', 'INTERACTIVE'])) {
+            $this->log("Tried to set shipment contents source to invalid values", 'Warning');
+            return false;
+        }
+
+        $this->options['InboundShipmentHeader.IntendedBoxContentsSource'] = $a;
+
+    }
+
     /**
      * Sets the address. (Required)
      *
